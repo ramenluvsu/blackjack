@@ -12,6 +12,8 @@ private:
     vector<Card> cards;
     int calculateTotal(int index) const; // recursive helper
 
+    friend class Dealer;
+
 public:
     void addCard(Card card);
     int getTotal() const;        // calls recursive function
@@ -21,5 +23,6 @@ public:
     void clear();                // reset hand
     int cardCount() const;
 };
+
 
 #endif
