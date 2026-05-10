@@ -5,10 +5,12 @@
 
 using namespace std;
 
+//this is the human player class it asks the user what to do
 class HumanPlayer : public Player {
 public:
     HumanPlayer(string name);
-    bool makeMove() override; // asks user to hit or stand
+    bool make_move() override; //WIll ask user to hit or stand
+
 };
 
 #endif

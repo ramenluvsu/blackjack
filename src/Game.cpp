@@ -1,138 +1,140 @@
 #include "Game.h"
 
-Game::Game(string playerName) : player(playerName) {}
+Game::Game(string player_name) : player(player_name) {}
 
-void Game::dealInitialCards() {
+void Game::deal_initial_cards() {
     deck = Deck();
     deck.shuffle();
-    player.resetHand();
-    dealer.resetHand();
+    player.reset_hand();
+    dealer.reset_hand();
 
-    // Deal 2 cards each, alternating like real blackjack
-    player.receiveCard(deck.dealCard());
-    dealer.receiveCard(deck.dealCard());
-    player.receiveCard(deck.dealCard());
-    dealer.receiveCard(deck.dealCard());
+    //deal 2 cards each alternating like real blackjack
+    player.receive_card(deck.deal_card());
+    dealer.receive_card(deck.deal_card());
+    player.receive_card(deck.deal_card());
+    dealer.receive_card(deck.deal_card());
 }
 
-void Game::playerTurn() {
-    cout << "\n--- Your Turn ---" << endl;
-    player.showHand();
+void Game::player_turn() {
+    cout << "\n--- Your Turn ---" <<endl;
+    player.show_hand();
 
-    if (player.isBlackjack()) {
-        cout << "BLACKJACK! Amazing!" << endl;
+    if (player.is_blackjack()) {
+        cout << "BLACKJACK! Amazing!" <<endl;
         return;
     }
 
-    while (!player.isBust()) {
-        bool hit = player.makeMove();
+    while (!player.is_bust()) {
+        bool hit = player.make_move();
         if (!hit) break;
 
-        Card card = deck.dealCard();
-        player.receiveCard(card);
-        discardPile.push(card);
-        cout << "You drew: " << card << endl;
-        player.showHand();
+        Card card = deck.deal_card();
+        player.receive_card(card);
+        discard_pile.push(card);
+        cout << "You drew: " << card <<endl;
+        player.show_hand();
 
-        if (player.isBust()) {
-            cout << "BUST! You went over 21." << endl;
+        if (player.is_bust()) {
+            //player went over 21 so i will stop the turn
+            cout << "BUST! You went over 21." <<endl;
             break;
         }
     }
 }
 
-void Game::dealerTurn() {
-    cout << "\n--- Dealer's Turn ---" << endl;
-    dealer.showHand();
+void Game::dealer_turn() {
+    cout << "\n--- Dealer's Turn ---" <<endl;
+    dealer.show_hand();
 
-    while (dealer.makeMove()) {
-        Card card = deck.dealCard();
-        dealer.receiveCard(card);
-        discardPile.push(card);
-        cout << "Dealer drew: " << card << endl;
-        dealer.showHand();
+    while (dealer.make_move()) {
+        Card card = deck.deal_card();
+        dealer.receive_card(card);
+        discard_pile.push(card);
+        cout << "Dealer drew: " << card <<endl;
+        dealer.show_hand();
     }
 
-    if (dealer.isBust())
-        cout << "Dealer BUST!" << endl;
+    if (dealer.is_bust())
+        cout << "Dealer BUST!" <<endl;
 }
 
-string Game::determineWinner() {
-    int playerTotal = player.getTotal();
-    int dealerTotal = dealer.getTotal();
+string Game::determine_winner() {
+    int player_total = player.get_total();
+    int dealer_total = dealer.get_total();
 
-    if (player.isBust())                          return "dealer";
-    if (dealer.isBust())                          return "player";
-    if (player.isBlackjack() && !dealer.isBlackjack()) return "player";
-    if (dealer.isBlackjack() && !player.isBlackjack()) return "dealer";
-    if (playerTotal > dealerTotal)                return "player";
-    if (dealerTotal > playerTotal)                return "dealer";
+    //check all the possible outcomes in order
+    if (player.is_bust())                                   return "dealer";
+    if (dealer.is_bust())                                   return "player";
+    if (player.is_blackjack() && !dealer.is_blackjack())   return "player";
+    if (dealer.is_blackjack() && !player.is_blackjack())   return "dealer";
+    if (player_total > dealer_total)                        return "player";
+    if (dealer_total > player_total)                        return "dealer";
     return "tie";
 }
 
-void Game::updateLeaderboard() {
-    leaderboard[player.getName()] = player.getWins();
-    leaderboard[dealer.getName()] = dealer.getWins();
+void Game::update_leaderboard() {
+    leaderboard[player.get_name()] = player.get_wins();
+    leaderboard[dealer.get_name()] = dealer.get_wins();
 }
 
-void Game::showLeaderboard() {
-    cout << "\n--- Leaderboard ---" << endl;
+void Game::show_leaderboard() {
+    cout << "\n___ Leaderboard ___" <<endl;
 
-    // Copy map to vector and sort by wins (descending)
+    //copy map into vector so we can sort it by wins
     vector<pair<string, int>> sorted(leaderboard.begin(), leaderboard.end());
     sort(sorted.begin(), sorted.end(), [](auto& a, auto& b) {
         return a.second > b.second;
     });
 
     for (auto& entry : sorted)
-        cout << "  " << entry.first << ": " << entry.second << " wins" << endl;
+        cout << "  " << entry.first << ": " << entry.second << " wins" <<endl;
 }
 
+
 void Game::play() {
-    dealInitialCards();
+    deal_initial_cards();
+    cout << "   BLACKJACK" <<endl;
+    cout << "!!!!!!!!!!!!!!!!!!!!!!" <<endl;
 
-    cout << "\n=============================" << endl;
-    cout << "   BLACKJACK" << endl;
-    cout << "=============================" << endl;
+    dealer.show_first_card();
+    player_turn();
 
-    dealer.showFirstCard();
-    playerTurn();
+    if (!player.is_bust())
+        dealer_turn();
 
-    if (!player.isBust())
-        dealerTurn();
+    cout << "\n--- Result ---" <<endl;
+    cout << "Your total:   " << player.get_total() <<endl;
+    cout << "Dealers total: " << dealer.get_total() <<endl;
 
-    cout << "\n--- Result ---" << endl;
-    cout << "Your total:   " << player.getTotal() << endl;
-    cout << "Dealer total: " << dealer.getTotal() << endl;
-
-    string winner = determineWinner();
+    string winner = determine_winner();
     if (winner == "player") {
-        cout << "YOU WIN!" << endl;
-        player.recordWin();
-        dealer.recordLoss();
+        cout << "YOU WIN BRO!" <<endl;
+        player.record_win();
+        dealer.record_loss();
     } else if (winner == "dealer") {
-        cout << "DEALER WINS!" << endl;
-        dealer.recordWin();
-        player.recordLoss();
+        cout << "DEALER WINS DUDE!" <<endl;
+        dealer.record_win();
+        player.record_loss();
     } else {
-        cout << "IT'S A TIE!" << endl;
+        cout << "IT'S A TIE...." <<endl;
     }
 
-    updateLeaderboard();
-    showLeaderboard();
+    update_leaderboard();
+    show_leaderboard();
+
 }
 
 void Game::run() {
-    cout << "=============================" << endl;
-    cout << "   WELCOME TO BLACKJACK" << endl;
-    cout << "=============================" << endl;
+    cout << "   WELCOME TO BLACKJACK" <<endl;
+    cout << "!!!!!!!!!!!!!!!!!!!!!!!!!!!" <<endl;
 
     string choice;
     do {
         play();
-        cout << "\nPlay again? (y/n): ";
+        cout << "\nWanna play again??: ";
         cin >> choice;
-    } while (choice == "y" || choice == "Y");
+    } while (choice == "yes" || choice == "Yes");
 
-    cout << "\nThanks for playing!" << endl;
+    //game is over
+    cout << "\nthanku for playing bro!" <<endl;
 }

@@ -10,13 +10,13 @@ using namespace std;
 
 class Deck {
 private:
-    vector<Card> cards;
+    vector<Card> cards;  //holds all 52 cards
 
 public:
-    Deck();           // builds a full 52-card deck
-    void shuffle();   // shuffles the deck
-    Card dealCard();  // removes and returns top card
-    int size() const; // how many cards left
+    Deck();
+    void shuffle();       //shuffles thedeck randomly
+    Card deal_card();     //removes and returns the top card
+    int size() const;     //how many cards are left in the deck
 };
 
 #endif

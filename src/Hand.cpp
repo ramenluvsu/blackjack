@@ -1,50 +1,53 @@
 #include "Hand.h"
 
-void Hand::addCard(Card card) {
+void Hand::add_card(Card card) {
     cards.push_back(card);
 }
 
-// Recursively adds up card values
-int Hand::calculateTotal(int index) const {
+// we wil recursively add up all card values starting from index 0
+int Hand::calculate_total(int index) const {
     if (index == cards.size())
         return 0;
-    return cards[index].getValue() + calculateTotal(index + 1);
+    return cards[index].get_value() +calculate_total(index + 1);
 }
 
-int Hand::getTotal() const {
-    int total = calculateTotal(0); // start recursion from index 0
+int Hand::get_total() const {
+    int total = calculate_total(0);
 
-    // Adjust for Aces: if bust and we have an Ace, count it as 1 instead of 11
+    //count howmany aces we have so we can adjust if we bust
     int aces = 0;
     for (auto& card : cards)
-        if (card.getRank() == "A") aces++;
+        if (card.get_rank() == "A") aces++;
 
+    //flip ace from 11 to 1 if we going over 21
     while (total > 21 && aces > 0) {
-        total -= 10; // flip Ace from 11 to 1
+        total -= 10;
         aces--;
     }
 
     return total;
 }
 
-bool Hand::isBust() const {
-    return getTotal() > 21;
+
+
+bool Hand::is_bust() const {
+    return get_total() > 21;
 }
 
-bool Hand::isBlackjack() const {
-    return cards.size() == 2 && getTotal() == 21;
+bool Hand::is_blackjack() const {
+    return cards.size() == 2 && get_total() == 21;
 }
 
 void Hand::display() const {
     for (auto& card : cards)
-        cout << "  " << card << endl;
-    cout << "  Total: " << getTotal() << endl;
+        cout << "  " << card <<endl;
+    cout << "  Total: " << get_total() <<endl;
 }
 
 void Hand::clear() {
     cards.clear();
 }
 
-int Hand::cardCount() const {
+int Hand::card_count() const {
     return cards.size();
 }

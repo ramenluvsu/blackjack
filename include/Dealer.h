@@ -5,11 +5,14 @@
 
 using namespace std;
 
+//dealer class follows fixed rules doesnt ask for input
 class Dealer : public Player {
 public:
+
     Dealer();
-    bool makeMove() override; // dealer hits until 17+
-    void showFirstCard() const; // shows only one card at start
+    bool make_move() override;      //hits until 17 then stops
+    void show_first_card() const;   //only shows one card at the start
+
 };
 
-#endif  
+#endif

@@ -14,9 +14,12 @@ int main() {
         game.run();
 
     } catch (exception& e) {
-        cout << "Error: " << e.what() << endl;
+        //if something breaks print the error so we know what went wrong
+        cout << "Error: " << e.what() <<endl; 
         return 1;
     }
 
     return 0;
+
+    
 }
