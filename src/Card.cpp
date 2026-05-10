@@ -3,6 +3,14 @@
 Card::Card(string rank, string suit, int value)
     : rank(rank), suit(suit), value(value) {}
 
+
+Card::Card(const Card& other) {
+    //copies all the data from another card into this one
+    rank = other.rank;
+    suit = other.suit;
+    value = other.value;
+}
+
 string Card::get_rank() const {
     return rank;
 }

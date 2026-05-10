@@ -14,6 +14,7 @@ private:
 
 public:
     Card(string rank, string suit, int value);
+    Card(const Card& other);  //copy constructor
 
     string get_rank() const;
     string get_suit() const;
